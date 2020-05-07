@@ -621,7 +621,8 @@ __1.__
 
     X <- matrix(c(-0.45 , 0.77, 0.16, 1.22, 1.75, 0.24, 0.27, 1.74, 0.07, -0.87, -0.90, 1.07, -0.06, 0.33, -0.06, 0.09, 0.10, -0.04),
     3, 6, byrow = TRUE)
-                  
+    
+$$\Sigma_{i=1}^n\frac{|y_i-\overline{y}|}{n},\ \ where\  \overline{y} = \Sigma_{i=1}^{n}\frac{y_i}{n}$$              
 ```{r}
 f<-function(x){
   n<-length(x)
@@ -637,6 +638,141 @@ f<-function(x){
 
 X <- matrix(c(-0.45 , 0.77, 0.16, 1.22, 1.75, 0.24,0.27, 1.74, 0.07, -0.87, -0.90, 1.07,-0.06, 0.33, -0.06, 0.09, 0.10, -0.04), 3, 6, byrow = TRUE)
 apply(X,1,f)
+```
+
+***
+
+(d) Draw the curve by the following equations and identify what the graph is.
+
+$$y_i = \sqrt{(1-x^2)} \ \ and\ \  y_2 = -\sqrt{(1-x^2)}$$
+
+```{r,fig.width=8,fig.height=4}
+par(mfrow=c(1,2))
+curve(sqrt(1-x^2),-1,1,ylab = 'y1',main = 'sqrt(1-x^2) → 上半圓')
+curve(-sqrt(1-x^2),-1,1,ylab = 'y2',main='-sqrt(1-x^2) → 下半圓')
+```
+
+***
+
+(e)Use the dataset iris. Write a code to draw the plot:
+
+```{r,eval=FALSE}
+datasets::iris
+```
+```{r,fig.width=6,fig.height=5}
+plot(c(4,10),c(0,10),type = 'n',
+     xlab = 'Special.Length',
+     ylab = 'Peta;.Length')
+for(i in 1:length(iris$Species)){
+  if (iris$Species[i] == 'setosa'){
+    points(iris$Sepal.Length[i],iris$Petal.Length[i],col='black')
+  }else if (iris$Species[i]=='versicolor'){
+    points(iris$Sepal.Length[i],iris$Petal.Length[i],col='red')
+  }else{
+    points(iris$Sepal.Length[i],iris$Petal.Length[i],col='green')
+  }
+}
+legend('topright',c('setosa','versicolor','virginica'),col=c('black','red','green'),pch=c(1,1,1))
+
+```
+
+***
+
+__2.__ Download the package “titanic” and library("titanic"). Use data(titanic_train) to the following questions:
+
+(a) Extract the column names of the dateset.
+
+```{r}
+library('titanic')
+colnames(titanic_train)
+```
+
+***
+
+(b) How many people are there in the dataset? The column “Survived” is Passenger Survival Indicator with dead 0 and survival 1. How many survived people are there?
+
+```{r}
+#all people
+length(titanic_train$Survived)
+#survived people
+sum(titanic_train$Survived)
+```
+
+***
+
+(c) Draw two pie charts for the columns of Survived and Sex.
+
+```{r}
+par(mfrow=c(1,2))
+x<-table(titanic_train$Survived)
+pie(x,main = 'survive')
+y<-table(titanic_train$Sex)
+pie(y,main='Sex')
+```
+
+***
+
+(d) Provide the value of percentage of each gender in both survival group and dead group.
+
+```{r}
+g_s<-0;b_s<-0
+g_d<-0;b_d<-0
+for(i in 1:length(titanic_train$Survived)){
+  if(titanic_train$Survived[i]==1){
+    if(titanic_train$Sex[i]=='female'){
+      g_s<-g_s+1
+    }else{
+      b_s<-b_s+1
+    }
+  }else{
+    if(titanic_train$Sex[i]=='female'){
+      g_d<-g_d+1
+    }else{
+      b_d<-b_d+1
+    }
+  }
+}
+paste('Survival_male:',b_s/(b_s+g_s)*100)
+paste('Survival_female:',g_s/(b_s+g_s)*100)
+paste('Dead_male:',b_d/(b_d+g_d)*100)
+paste('Dead_female:',g_d/(b_d+g_d)*100)
+```
+
+***
+
+__3.__  Let x <- seq(-1.5, 1.5, 0.01) and y <- seq(-1.5, 1.5, 0.01).
+
+(a)Use a matrix to collect all possible combinations of x and y into a matrix satisfying
+$$x^2y^3-(x^2+y^2-1)^3\geq0$$
+```{r}
+x <- seq(-1.5, 1.5, 0.01)
+y <- seq(-1.5, 1.5, 0.01)
+ma<-matrix(c(0,0),1,2)
+for (i in 1:length(x)){
+  if(x[i]^2*y[i]^2-(x[i]^2+y[i]^2-1)**3>=0){
+    ma<-rbind(ma,c(x[i],y[i]))
+  }
+}
+```
+
+***
+
+(b) Draw a plot including all possible combinations in (a). What is the graph?
+
+```{r,fig.width=4,fig.height=3}
+plot(ma,xlab = 'x',ylab = 'y',main = '斜直線')
+```
+
+***
+
+__4.__ Download the package “nlme” and library(nlme). Begin with the data: data(Fatigue). There are three columns, which are “Path”, “cycles”, and “relLength”. __Path__ means the ID number of a unit, __cycles__ means the measurement time point, and __relLength__ means the crack length over cycles. Use the Fatigue data to the following questions:
+
+(a) How many units are there in the dataset?
+
+```{r}
+library('nlme')
+data(Fatigue)
+length(unique(Fatigue$Path))
 ```
 
 ***
